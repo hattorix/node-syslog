@@ -69,7 +69,9 @@ static void UV_Log(uv_work_t *req) {
 	struct log_request *log_req = (struct log_request *)(req->data);
 	char *msg = log_req->msg;
 	
+#ifndef WIN32
 	syslog(log_req->log_level, "%s", msg);
+#endif
 	return;
 }
 
@@ -117,13 +119,16 @@ Syslog::destroy ( const Arguments& args)
 void
 Syslog::open ( int option, int facility)
 {
+#ifndef WIN32
 	openlog( name, option, facility );
+#endif
 	connected_ = true;
 }
 
 Handle<Value>
 Syslog::setMask ( const Arguments& args)
 {
+#ifndef WIN32
 	bool upTo = false;
 	int mask, value;
 	HandleScope scope;
@@ -152,13 +157,18 @@ Syslog::setMask ( const Arguments& args)
 	}
 	
 	return scope.Close(Integer::New( setlogmask(mask) ));
+#else
+	return Undefined();
+#endif
 }
 
 void
 Syslog::close ()
 {
 	if(connected_) {
+#ifndef WIN32
 		closelog();
+#endif
 		connected_ = false;
 	}
 }

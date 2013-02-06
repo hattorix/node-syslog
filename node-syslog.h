@@ -5,7 +5,9 @@
 #include <node_object_wrap.h>
 #include <node_version.h>
 #include <v8.h>
+#ifndef WIN32
 #include <syslog.h>
+#endif
 #include <stdlib.h>
 #include <string.h>
 #include <uv.h>
